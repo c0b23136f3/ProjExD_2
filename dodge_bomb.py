@@ -14,7 +14,7 @@ DELTA = {  # 移動量辞書（押下キー：移動量タプル）
 def kadai3():
  """課題３
  は
- 失敗した
+ 失敗しました
  """
  screen = pg.display.set_mode((800, 600))     #課題３の失敗作
  sikaku=pg.Surface((20,20))
@@ -73,8 +73,8 @@ def main():
     for r in range(1, 11):
         bb_img = pg.Surface((20*r, 20*r)) 
         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
-        bb_accs=0
-        bb_imgs=0
+        bb_accs:int=0
+        bb_imgs;int=0
         tmr=1
         avx = vx*bb_accs[min(tmr//500, 9)] 
         bb_img = bb_imgs[min(tmr//500, 9)]
