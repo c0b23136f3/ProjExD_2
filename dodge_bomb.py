@@ -11,15 +11,32 @@ DELTA = {  # 移動量辞書（押下キー：移動量タプル）
     pg.K_LEFT: (-5, 0),
     pg.K_RIGHT: (+5, 0),
 }
+def kadai3():
+ """課題３
+ は
+ 失敗した
+ """
+ screen = pg.display.set_mode((800, 600))     #課題３の失敗作
+ sikaku=pg.Surface((20,20))
+ pg.draw.rect(sikaku,(255,255,255),(10,10),10)
+ fonto = pg.font.Font(None, 80)
+ txt = fonto.render("hello", True, (0, 0, 0))
+ screen.blit(sikaku, [300, 200])
+ pg.display.update()
+
+ screen=pg.display.set_mode((800,600))
+ enn=pg.Surface((20,20))
+ pg.draw.circle(enn,(255,0,0),(10,10),10)
+ screen.blit()
+
+ fonto = pg.font.Font(None, 80) 
+ txt = fonto.render("hello", True, (255, 255, 255)) 
+ screen.blit(txt, [300, 200])                #ここまで
+print(kadai3.__doc__)
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-
 def check_bound(obj_rct:pg.Rect) -> tuple[bool, bool]:
-    """
-    こうかとんRect，または，爆弾Rectの画面内外判定用の関数
-    引数：こうかとんRect，または，爆弾Rect
-    戻り値：横方向判定結果，縦方向判定結果（True：画面内／False：画面外）
-    """
+   
     yoko, tate = True, True
     if obj_rct.left < 0 or WIDTH < obj_rct.right: 
         yoko = False
@@ -36,13 +53,31 @@ def main():
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 2.0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900, 400
+
+    KOUKATONMUKI={
+    pg.K_UP: pg.transform.rotozoom(kk_img, 280, 1.0),     #課題１の辞書
+    pg.K_DOWN: pg.transform.rotozoom(kk_img, 90, 1.0),
+    pg.K_LEFT: pg.transform.rotozoom(kk_img, 0, 1.0),
+    pg.K_RIGHT: pg.transform.rotozoom(kk_img, 180, 1.0),
+}
+
     # ここから爆弾の設定
     bd_img = pg.Surface((20, 20))
     bd_img.set_colorkey((0, 0, 0))
     pg.draw.circle(bd_img, (255, 0, 0), (10, 10), 10)
     bd_rct = bd_img.get_rect()
     bd_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
-    vx, vy = +5, +5  # 横方向速度，縦方向速度
+    vx, vy = +5, +5  
+
+    accs = [a for a in range(1, 11)]      #課題２の途中
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r)) 
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_accs=0
+        bb_imgs=0
+        tmr=1
+        avx = vx*bb_accs[min(tmr//500, 9)] 
+        bb_img = bb_imgs[min(tmr//500, 9)]
 
     clock = pg.time.Clock()
     tmr = 0
@@ -51,6 +86,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bd_rct): #こうかトンと爆弾がぶつかったら
+            
             print("Game Over")
             return
         screen.blit(bg_img, [0, 0]) 
@@ -62,17 +98,22 @@ def main():
             if key_lst[k]:
                sum_mv[0] += v[0]
                sum_mv[1] += v[1]
+
+        for l,r in KOUKATONMUKI.items():    #課題３の失敗作
+            if key_lst[l]:
+                kk_img[0]+=r[0]
+                kk_img[1]+=r[1]
+        
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
-        # 爆弾の移動と表示
         bd_rct.move_ip(vx, vy)       
         screen.blit(bd_img, bd_rct)
         yoko, tate = check_bound(bd_rct)
-        if not yoko:  # 横方向にはみ出てたら
+        if not yoko: 
             vx *= -1
-        if not tate:  # 縦方向にはみ出てたら
+        if not tate:  
             vy *= -1
         pg.display.update()
         tmr += 1
